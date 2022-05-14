@@ -1,12 +1,13 @@
 package com.ignatt.spring.rest.controller;
 
 import com.ignatt.spring.rest.entity.Employee;
+import com.ignatt.spring.rest.exception_handing.EmployeeIncorrectData;
+import com.ignatt.spring.rest.exception_handing.NoSuchEmployeeException;
 import com.ignatt.spring.rest.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,7 +27,18 @@ public class MyRESTController {
     @GetMapping("/employees/{id}")
     public Employee getEmployee(@PathVariable int id){
         Employee employee = employeeService.getEmployee(id);
+
+        if (employee == null){
+            throw new NoSuchEmployeeException("No data for this req");
+        }
         return employee;
+    }
+    @ExceptionHandler
+    public ResponseEntity<EmployeeIncorrectData> handleException(
+            NoSuchEmployeeException exception) {
+        EmployeeIncorrectData date = new EmployeeIncorrectData();
+        date.setInfo(exception.getMessage());
+        return new ResponseEntity<>(date, HttpStatus.NOT_FOUND);
     }
 
 }
