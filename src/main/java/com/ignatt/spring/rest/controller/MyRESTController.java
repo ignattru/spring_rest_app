@@ -41,4 +41,11 @@ public class MyRESTController {
         return new ResponseEntity<>(date, HttpStatus.NOT_FOUND);
     }
 
+    @PostMapping("/employees")
+    public Employee addNewEmployee(@RequestBody Employee employee){
+
+        employeeService.saveEmployee(employee);
+        return employee;
+    }
+
 }
