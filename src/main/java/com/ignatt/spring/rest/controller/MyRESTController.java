@@ -55,6 +55,11 @@ public class MyRESTController {
 
     @DeleteMapping("/employees/{id}")
     public String deleteEmployee (@PathVariable int id){
+        Employee employee = employeeService.getEmployee(id);
+        if(employee==null){
+            throw new NoSuchEmployeeException("No found emp");
+        }
+
         employeeService.deleteEmployee(id);
         return "Employee with ID = " + id+ "was deleted";
     }
